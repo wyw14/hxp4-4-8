@@ -52,6 +52,7 @@
       "antennaShift": [-20, 20]
     },
     "intervalMs": 4000,
-    "stormIntensity": 0.6
+    "stormIntensity": 0.6,
+    "lightningProbability": 0.003
   }
 }

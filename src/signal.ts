@@ -132,6 +132,7 @@ export class WeatherSystem {
   private stormPulse: number = 0;
   private flashActive: boolean = false;
   private flashTimer: number = 0;
+  private driftMultiplier: number = 1;
 
   constructor(config: WeatherConfig) {
     this.config = config;
@@ -143,10 +144,11 @@ export class WeatherSystem {
 
   private generateNewTarget(): void {
     const { vhfShift, uhfShift, antennaShift } = this.config.baseOffset;
+    const mult = this.driftMultiplier;
     this.targetOffset = {
-      vhfShift: vhfShift[0] + Math.random() * (vhfShift[1] - vhfShift[0]),
-      uhfShift: uhfShift[0] + Math.random() * (uhfShift[1] - uhfShift[0]),
-      antennaShift: antennaShift[0] + Math.random() * (antennaShift[1] - antennaShift[0])
+      vhfShift: vhfShift[0] * mult + Math.random() * (vhfShift[1] - vhfShift[0]) * mult,
+      uhfShift: uhfShift[0] * mult + Math.random() * (uhfShift[1] - uhfShift[0]) * mult,
+      antennaShift: antennaShift[0] * mult + Math.random() * (antennaShift[1] - antennaShift[0]) * mult
     };
   }
 
@@ -166,7 +168,7 @@ export class WeatherSystem {
     this.stormPulse = 0.5 + 0.5 * Math.sin(now * 0.001) * Math.sin(now * 0.0007);
     const rainIntensity = this.config.stormIntensity * (0.6 + 0.4 * this.stormPulse);
 
-    if (!this.flashActive && Math.random() < 0.003) {
+    if (!this.flashActive && Math.random() < this.config.lightningProbability) {
       this.flashActive = true;
       this.flashTimer = 0.08 + Math.random() * 0.12;
     }
@@ -183,5 +185,30 @@ export class WeatherSystem {
       rainIntensity,
       flash: this.flashActive
     };
+  }
+
+  setDriftMultiplier(multiplier: number): void {
+    this.driftMultiplier = Math.max(0, multiplier);
+    this.generateNewTarget();
+  }
+
+  setIntervalMs(intervalMs: number): void {
+    this.config.intervalMs = Math.max(50, intervalMs);
+  }
+
+  setStormIntensity(intensity: number): void {
+    this.config.stormIntensity = Math.max(0, Math.min(2, intensity));
+  }
+
+  setLightningProbability(probability: number): void {
+    this.config.lightningProbability = Math.max(0, Math.min(1, probability));
+  }
+
+  getConfig(): WeatherConfig {
+    return { ...this.config };
+  }
+
+  getDriftMultiplier(): number {
+    return this.driftMultiplier;
   }
 }

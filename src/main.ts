@@ -1,6 +1,7 @@
 import { CRTRenderer } from './renderer';
 import { AudioManager } from './audio';
 import { KnobController, type KnobParam } from './knobs';
+import { StormDebugPanel, type StormDebugParam } from './stormDebug';
 import {
   findBestSignalMatch,
   getSignalColor,
@@ -15,6 +16,7 @@ class Game {
   private audioManager: AudioManager;
   private knobController: KnobController | null = null;
   private weatherSystem: WeatherSystem | null = null;
+  private stormDebugPanel: StormDebugPanel | null = null;
 
   private signals: Signal[] = [];
   private tuner: TunerState = { vhf: 100, uhf: 400, antenna: 180 };
@@ -123,9 +125,41 @@ class Game {
       this.renderer?.resize();
     });
 
+    if (this.weatherSystem) {
+      const weatherConfig = this.weatherSystem.getConfig();
+      this.stormDebugPanel = new StormDebugPanel({
+        driftMultiplier: 1,
+        intervalMs: weatherConfig.intervalMs,
+        stormIntensity: weatherConfig.stormIntensity,
+        lightningProbability: weatherConfig.lightningProbability
+      }, (param: StormDebugParam, value: number) => {
+        this.handleDebugChange(param, value);
+      });
+    }
+
     void this.knobController;
+    void this.stormDebugPanel;
 
     this.animate();
+  }
+
+  private handleDebugChange(param: StormDebugParam, value: number): void {
+    if (!this.weatherSystem) return;
+
+    switch (param) {
+      case 'driftMultiplier':
+        this.weatherSystem.setDriftMultiplier(value);
+        break;
+      case 'intervalMs':
+        this.weatherSystem.setIntervalMs(value);
+        break;
+      case 'stormIntensity':
+        this.weatherSystem.setStormIntensity(value);
+        break;
+      case 'lightningProbability':
+        this.weatherSystem.setLightningProbability(value);
+        break;
+    }
   }
 
   private async loadSignals(): Promise<SignalsData> {

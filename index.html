@@ -72,6 +72,46 @@
         </div>
       </div>
     </div>
+
+    <div class="storm-debug-panel" id="stormDebugPanel">
+      <div class="debug-header">
+        <span class="debug-title">⚡ STORM DEBUG</span>
+        <button class="debug-toggle" id="debugToggle">−</button>
+      </div>
+      <div class="debug-content" id="debugContent">
+        <div class="debug-slider-group">
+          <div class="debug-slider-label">
+            <span>漂移幅度</span>
+            <span class="debug-value" id="driftValue">1.0x</span>
+          </div>
+          <input type="range" id="driftSlider" min="0" max="3" step="0.1" value="1" class="debug-slider">
+        </div>
+        <div class="debug-slider-group">
+          <div class="debug-slider-label">
+            <span>变化间隔</span>
+            <span class="debug-value" id="intervalValue">4000ms</span>
+          </div>
+          <input type="range" id="intervalSlider" min="200" max="10000" step="100" value="4000" class="debug-slider">
+        </div>
+        <div class="debug-slider-group">
+          <div class="debug-slider-label">
+            <span>雨噪强度</span>
+            <span class="debug-value" id="rainValue">0.60</span>
+          </div>
+          <input type="range" id="rainSlider" min="0" max="2" step="0.05" value="0.6" class="debug-slider">
+        </div>
+        <div class="debug-slider-group">
+          <div class="debug-slider-label">
+            <span>闪电概率</span>
+            <span class="debug-value" id="lightningValue">0.003</span>
+          </div>
+          <input type="range" id="lightningSlider" min="0" max="0.05" step="0.001" value="0.003" class="debug-slider">
+        </div>
+        <div class="debug-reset">
+          <button id="debugReset" class="debug-reset-btn">重置默认值</button>
+        </div>
+      </div>
+    </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>

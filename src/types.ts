@@ -21,6 +21,7 @@ export interface WeatherConfig {
   };
   intervalMs: number;
   stormIntensity: number;
+  lightningProbability: number;
 }
 
 export interface SignalsData {
